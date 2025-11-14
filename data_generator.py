@@ -5,7 +5,7 @@ import os
 from datetime import datetime
 from sklearn.ensemble import IsolationForest
 
-# CONFIGURATION
+# config
 
 np.random.seed(42)
 
@@ -14,16 +14,16 @@ plans = ["Basic", "Standard", "Premium"]
 start_date = "2022-01-01"
 end_date = "2024-12-01"
 
-# Make sure data folder exists
+# check if the data folder is there
 os.makedirs("data", exist_ok=True)
 
 
-# GENERATE DATE RANGE
+# date range generation
 
 dates = pd.date_range(start=start_date, end=end_date, freq="MS")
 
 
-# BASE PARAMETERS
+# parameters
 
 region_base_revenue = {
     "North America": 900,
@@ -55,7 +55,7 @@ content_events = {
 }
 
 
-# GENERATE DATA
+# data generation
 data = []
 
 for region in regions:
@@ -110,14 +110,14 @@ for region in regions:
 df = pd.DataFrame(data)
 
 
-# ADD ANOMALIES USING ISOLATION FOREST
+# annomalies added using isolation forest
 
 model = IsolationForest(contamination=0.05, random_state=42)
 df["anomalies"] = model.fit_predict(df[["revenue_usd_mn", "subscribers_mn", "growth_rate"]])
 df["anomalies"] = df["anomalies"].apply(lambda x: 1 if x == -1 else 0)
 
 
-# SAVE TO CSV
+# data saved as csv file
 
 output_path = "data/netflix_global_revenue.csv"
 df.to_csv(output_path, index=False)
