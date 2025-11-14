@@ -3,7 +3,7 @@ import pandas as pd
 import plotly.express as px
 from sklearn.ensemble import IsolationForest
 
-# ================= PAGE CONFIG =================
+# config page
 st.set_page_config(
     page_title="Netflix Global Revenue Dashboard",
     page_icon="📊",
@@ -11,7 +11,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ================= CUSTOM LIGHT THEME STYLING =================
+# theme and style of page - ui
 st.markdown("""
 <style>
 body {
@@ -41,7 +41,7 @@ div[data-testid="stMetricValue"] {
 </style>
 """, unsafe_allow_html=True)
 
-# ================= LOAD DATA =================
+# data load
 @st.cache_data
 def load_data():
     df = pd.read_csv("data/netflix_global_revenue.csv")
@@ -50,18 +50,18 @@ def load_data():
 
 df = load_data()
 
-# ================= SIDEBAR FILTERS =================
+# filters for sidebars
 st.sidebar.image("https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg", width=150)
 st.sidebar.title("🎛️ Filters")
 region = st.sidebar.multiselect("Select Region", df["region"].unique(), default=df["region"].unique())
 plan = st.sidebar.multiselect("Select Plan", df["subscription_plan"].unique(), default=df["subscription_plan"].unique())
 df_filtered = df[(df["region"].isin(region)) & (df["subscription_plan"].isin(plan))]
 
-# ================= TITLE =================
-st.title("📈 Netflix Global Revenue Dashboard")
+# title
+st.title("📈 Netflix Global Revenue Insights Dashboard")
 st.markdown("#### Track Revenue, Anomalies, and Strategic Insights Across Regions")
 
-# ================= ANOMALY DETECTION =================
+# detect anaomaly 
 def detect_anomalies(data):
     df_anom = data.copy()
     model = IsolationForest(contamination=0.05, random_state=42)
@@ -71,7 +71,7 @@ def detect_anomalies(data):
 
 df_anomaly = detect_anomalies(df_filtered)
 
-# ================= KPI CARDS =================
+# kpi factors
 total_revenue = df_filtered["revenue_usd_mn"].sum() / 1e3  # in Bn USD
 avg_growth = df_filtered["growth_rate"].mean()
 anomaly_count = df_anomaly[df_anomaly["anomaly"]=="Anomaly"].shape[0]
@@ -81,11 +81,11 @@ col1.metric("🌍 Total Revenue (Bn USD)", f"${total_revenue:.2f}B")
 col2.metric("📈 Avg Growth Rate (%)", f"{avg_growth:.2f}%")
 col3.metric("⚠️ Anomalies Detected", anomaly_count)
 
-# ================= TABS FOR INTERACTIVITY =================
+# tabs
 tab1, tab2 = st.tabs(["Revenue & Anomalies", "Subscribers & Marketing"])
 
 with tab1:
-    # Revenue Trend Chart
+    # revenue chart
     fig_rev = px.line(df_anomaly, x="date", y="revenue_usd_mn", color="region",
                       title="Revenue Trends with Anomalies", template="plotly_white")
     fig_rev.add_scatter(
@@ -96,14 +96,14 @@ with tab1:
     )
     st.plotly_chart(fig_rev, use_container_width=True)
 
-    # Region-wise Revenue
+    # region wise chart
     region_chart = px.bar(df_filtered.groupby("region")["revenue_usd_mn"].sum().reset_index(),
                           x="region", y="revenue_usd_mn", color="region",
                           title="Total Revenue by Region", template="plotly_white")
     st.plotly_chart(region_chart, use_container_width=True)
 
 with tab2:
-    # Subscribers & Marketing Insights
+    # subscribers insights
     subs_chart = px.line(df_filtered, x="date", y="subscribers_mn", color="region",
                          title="Subscriber Trends", template="plotly_white")
     st.plotly_chart(subs_chart, use_container_width=True)
@@ -112,8 +112,8 @@ with tab2:
                              title="Marketing Spend by Region", template="plotly_white")
     st.plotly_chart(marketing_chart, use_container_width=True)
 
-# ================= STORYTELLING & STRATEGIC INSIGHTS =================
-with st.expander("📖 Storytelling & Strategic Insights"):
+# insights and storytelling
+with st.expander("📖 Strategic Insights"):
     st.markdown("""
     <div class="insight-box">
     <h4>📍 Executive Summary</h4>
@@ -136,7 +136,7 @@ with st.expander("📖 Storytelling & Strategic Insights"):
     </div>
     """, unsafe_allow_html=True)
 
-# ================= FOOTER =================
+# footer
 st.markdown("<hr>", unsafe_allow_html=True)
 st.markdown("""
 <div style='text-align:center; color:#555;'>
