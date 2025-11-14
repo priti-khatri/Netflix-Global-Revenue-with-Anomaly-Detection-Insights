@@ -21,7 +21,7 @@ File Format: CSV (UTF-8 encoded)
 | `content_launch`         | String             | `Stranger Things S4` / `N/A`                | Notable content event or major release driving growth           |
 | `marketing_spend_usd_mn` | Float              | `35.6`                                      | Estimated marketing investment (in USD millions) that month     |
 | `adoption_rate`          | Float              | `0.72`                                      | Ratio of new users to total potential market for that region    |
-| `anomalies`              | Integer (0 or 1)   | `1`                                         | Machine learning label — 1 = anomaly detected, 0 = normal trend |
+| `anomalies`              | Integer (0 or 1)   | `1`                                         | Machine learning label-1 = anomaly detected, 0 = normal trend |
 | `retention_index`        | Float              | `0.86`                                      | Estimated percentage of retained subscribers (1 = 100%)         |
 
 
